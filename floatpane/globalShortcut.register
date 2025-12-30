@@ -1,0 +1,17 @@
+// Add this inside applicationDidFinishLaunching
+NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
+    // Check for Cmd + Shift + P
+    if event.modifierFlags.contains([.command, .shift]) && event.charactersIgnoringModifiers == "x" {
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.windows.first?.makeKeyAndOrderFront(nil)
+    }
+}
+
+// Also handle the ESC key to hide
+NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+    if event.keyCode == 53 { // 53 is Escape
+        NSApp.hide(nil)
+        return nil
+    }
+    return event
+}
