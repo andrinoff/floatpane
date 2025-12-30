@@ -33,13 +33,13 @@ class HotKeyManager: ObservableObject {
         monitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self = self else { return }
             
-            // Intersection compares the actual keys pressed vs our saved modifiers
             let eventMods = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
             let targetMods = self.currentModifiers.intersection(.deviceIndependentFlagsMask)
             
+            // Check if the character matches AND the required modifiers are present
             if let char = event.charactersIgnoringModifiers?.lowercased(),
                char == self.storedKey.lowercased(),
-               eventMods == targetMods {
+               eventMods.contains(targetMods) { // Use .contains instead of ==
                 
                 DispatchQueue.main.async {
                     action()

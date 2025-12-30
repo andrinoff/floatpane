@@ -33,7 +33,14 @@ struct SettingsScene: Scene {
 
 // Custom Window Controller for Settings to ensure it looks standard
 class SettingsWindowController: NSWindowController {
-    static let shared = SettingsWindowController()
+    private static var _shared: SettingsWindowController?
+    
+    static var shared: SettingsWindowController {
+        if _shared == nil {
+            _shared = SettingsWindowController()
+        }
+        return _shared!
+    }
 
     private convenience init() {
         let window = NSWindow(
@@ -44,6 +51,7 @@ class SettingsWindowController: NSWindowController {
         window.center()
         window.title = "Floatpane Settings"
         window.contentView = NSHostingView(rootView: SettingsView())
+        window.isReleasedWhenClosed = false // Critical: prevents the object from being destroyed when closed
         self.init(window: window)
     }
 }
