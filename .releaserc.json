@@ -1,27 +1,39 @@
 {
   "branches": ["main", "master"],
   "plugins": [
-    ["@semantic-release/commit-analyzer", {
-      "preset": "conventionalcommits",
-      "releaseRules": [
-        {"type": "fix", "release": "minor"},
-        {"type": "feat", "release": "major"},
-        {"type": "big", "release": "major"}
-      ]
-    }],
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "conventionalcommits",
+        "releaseRules": [
+          { "type": "fix", "release": "patch" },
+          { "type": "feat", "release": "minor" },
+          { "type": "big", "release": "major" }
+        ]
+      }
+    ],
     "@semantic-release/release-notes-generator",
-    ["@semantic-release/exec", {
-      "prepareCmd": "./scripts/release.sh ${nextRelease.version}"
-    }],
-    ["@semantic-release/github", {
-      "assets": [
-        {"path": "floatpane-*-arm64.dmg", "label": "FloatPane ARM64"},
-        {"path": "floatpane-*-x64.dmg", "label": "FloatPane x64"}
-      ]
-    }],
-    ["@semantic-release/git", {
-      "assets": ["floatpane.xcodeproj/project.pbxproj"],
-      "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-    }]
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "./scripts/release.sh ${nextRelease.version}"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": "floatpane-*-arm64.dmg", "label": "FloatPane ARM64" },
+          { "path": "floatpane-*-x64.dmg", "label": "FloatPane x64" }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["floatpane.xcodeproj/project.pbxproj"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ]
   ]
 }
