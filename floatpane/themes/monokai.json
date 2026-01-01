@@ -1,0 +1,14 @@
+{
+  "name": "Monokai",
+  "colors": {
+    "primary": "#A6E22E",
+    "secondary": "#F92672",
+    "background": "#272822",
+    "surface": "#3E3D32",
+    "onPrimary": "#000000",
+    "onSecondary": "#FFFFFF",
+    "onBackground": "#F8F8F2",
+    "onSurface": "#F8F8F2",
+    "error": "#F92672"
+  }
+}

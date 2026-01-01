@@ -1,0 +1,14 @@
+{
+  "name": "Dracula",
+  "colors": {
+    "primary": "#BD93F9",
+    "secondary": "#FF79C6",
+    "background": "#282A36",
+    "surface": "#44475A",
+    "onPrimary": "#F8F8F2",
+    "onSecondary": "#282A36",
+    "onBackground": "#F8F8F2",
+    "onSurface": "#F8F8F2",
+    "error": "#FF5555"
+  }
+}

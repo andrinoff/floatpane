@@ -1,0 +1,14 @@
+{
+  "name": "Solarized Dark",
+  "colors": {
+    "primary": "#268BD2",
+    "secondary": "#6C71C4",
+    "background": "#002B36",
+    "surface": "#073642",
+    "onPrimary": "#FDF6E3",
+    "onSecondary": "#FDF6E3",
+    "onBackground": "#839496",
+    "onSurface": "#839496",
+    "error": "#DC322F"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Synthwave '84",
+  "colors": {
+    "primary": "#FFD866",
+    "secondary": "#FF66B3",
+    "background": "#2A2139",
+    "surface": "#34294F",
+    "onPrimary": "#2A2139",
+    "onSecondary": "#FFFFFF",
+    "onBackground": "#FFFFFF",
+    "onSurface": "#FFFFFF",
+    "error": "#FF4747"
+  }
+}

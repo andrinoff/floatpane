@@ -1,0 +1,14 @@
+{
+  "name": "Tokyo Night Blue",
+  "colors": {
+    "primary": "#7aa2f7",
+    "secondary": "#bb9af7",
+    "background": "#1a1b26",
+    "surface": "#24283b",
+    "onPrimary": "#ffffff",
+    "onSecondary": "#ffffff",
+    "onBackground": "#c0caf5",
+    "onSurface": "#c0caf5",
+    "error": "#f7768e"
+  }
+}

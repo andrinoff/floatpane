@@ -1,0 +1,14 @@
+{
+  "name": "Ayu Dark",
+  "colors": {
+    "primary": "#59C2FF",
+    "secondary": "#E6B450",
+    "background": "#0A0E14",
+    "surface": "#131721",
+    "onPrimary": "#000000",
+    "onSecondary": "#000000",
+    "onBackground": "#B3B1AD",
+    "onSurface": "#B3B1AD",
+    "error": "#F07178"
+  }
+}

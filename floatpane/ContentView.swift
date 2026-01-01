@@ -1,86 +1,111 @@
 import SwiftUI
+import Carbon
 
 struct ContentView: View {
-    @StateObject var manager = WallpaperManager()
-    @State private var hoveredIndex: Int? = nil
-    
+    @EnvironmentObject var model: WallpaperViewModel
+    @EnvironmentObject var store: SettingsStore
+    @Namespace private var ns
+
     var body: some View {
-        VStack(spacing: 0) {
-            // Horizontal Carousel
-            ScrollViewReader { proxy in
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 30) {
-                        ForEach(Array(manager.wallpapers.enumerated()), id: \.element) { index, url in
-                            WallpaperItem(
-                                url: url,
-                                isSelected: index == manager.selectedIndex
-                            )
-                            .id(index)
-                            .onTapGesture {
-                                manager.selectedIndex = index
-                                withAnimation { proxy.scrollTo(index, anchor: .center) }
+        let theme = store.currentTheme
+        return ZStack {
+            VStack(alignment: .leading, spacing: 12) {
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: 14) {
+                            ForEach(Array(model.wallpapers.enumerated()), id: \.offset) { index, url in
+                                WallpaperItem(
+                                    url: url,
+                                    isSelected: index == model.selectedIndex,
+                                    ns: ns,
+                                    accent: theme.primaryColor
+                                )
+                                .onTapGesture {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        model.setWallpaper(at: index)
+                                    }
+                                }
                             }
-                            .simultaneousGesture(TapGesture(count: 2).onEnded {
-                                manager.setWallpaper(url: url)
-                                NSApplication.shared.hide(nil)
-                            })
+                        }
+                        .padding(.horizontal, 18)
+                    }
+                    .frame(height: 130)
+                    .onChange(of: model.selectedIndex) { index in
+                        guard model.wallpapers.indices.contains(index) else { return }
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            proxy.scrollTo(index, anchor: .center)
                         }
                     }
-                    .padding(.horizontal, 50) // Padding to center the first/last items
-                    .padding(.vertical, 20)
-                }
-                .frame(height: 300) // Fixed height for the strip
-                // Auto-scroll when index changes (e.g. via keyboard)
-                .onChange(of: manager.selectedIndex) { newIndex in
-                    withAnimation {
-                        proxy.scrollTo(newIndex, anchor: .center)
+                    .onAppear {
+                        guard model.wallpapers.indices.contains(model.selectedIndex) else { return }
+                        DispatchQueue.main.async {
+                            proxy.scrollTo(model.selectedIndex, anchor: .center)
+                        }
                     }
                 }
-            }
-            
-            // Footer Info
-            HStack {
-                Text(manager.wallpapers.indices.contains(manager.selectedIndex)
-                     ? manager.wallpapers[manager.selectedIndex].lastPathComponent
-                     : "Select a wallpaper")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                
-                Spacer()
-                
-                Button(action: {
-                    // Open Settings Window
-                    if let url = URL(string: "floatpane://settings") {
-                        NSWorkspace.shared.open(url)
+
+                HStack(spacing: 12) {
+                    if let current = model.wallpapers[safe: model.selectedIndex] {
+                        Text("Current: \(current.lastPathComponent)")
+                            .font(.callout)
+                            .foregroundStyle(theme.onSurfaceColor.opacity(0.9))
+                            .lineLimit(1)
+                    } else {
+                        Text("No wallpaper selected")
+                            .font(.callout)
+                            .foregroundStyle(theme.onSurfaceColor.opacity(0.6))
                     }
-                }) {
-                    Image(systemName: "gearshape.fill")
-                        .foregroundColor(.white)
+
+                    Spacer()
+                    Button("Reload") { model.reloadWallpapers() }
+                        .foregroundStyle(theme.primaryColor)
+                    Button {
+                        store.isSettingsPresented = true
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .imageScale(.medium)
+                            .accessibilityLabel("Open settings")
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(theme.onSurfaceColor)
                 }
-                .buttonStyle(.plain)
+                .padding(.horizontal, 18)
             }
-            .padding()
-            .background(Color.black.opacity(0.5))
+            .padding(.vertical, 24)
+            .padding(.horizontal, 28)
+            .background(
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(theme.surfaceColor.opacity(0.95))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 26, style: .continuous)
+                            .stroke(theme.primaryColor.opacity(0.25), lineWidth: 1)
+                    )
+                    .shadow(color: theme.backgroundColor.opacity(0.5), radius: 28, y: 18)
+            )
+            .frame(maxWidth: 860)
+            .padding(.horizontal, 32)
         }
-        .background(VisualEffectView(material: .hudWindow, blendingMode: .behindWindow))
-        .cornerRadius(16)
-        // Keyboard Handling
-        .focusable()
-        .onAppear { DispatchQueue.main.async { NSApp.windows.first?.makeFirstResponder(nil) } }
-        .onKeyPress(.leftArrow) {
-            manager.selectedIndex = max(0, manager.selectedIndex - 1)
-            return .handled
+        .background(WindowConfigurator())
+        .overlay(KeyCatcher { key in handleKey(key) })
+        .onAppear {
+            NSApp.activate(ignoringOtherApps: true)
+            NSApp.windows.first?.makeKeyAndOrderFront(nil)
         }
-        .onKeyPress(.rightArrow) {
-            manager.selectedIndex = min(manager.wallpapers.count - 1, manager.selectedIndex + 1)
-            return .handled
+        .sheet(isPresented: $store.isSettingsPresented) {
+            SettingsView().environmentObject(store)
         }
-        .onKeyPress(.return) {
-            if manager.wallpapers.indices.contains(manager.selectedIndex) {
-                manager.setWallpaper(url: manager.wallpapers[manager.selectedIndex])
-                NSApplication.shared.hide(nil)
-            }
-            return .handled
+    }
+
+    private func handleKey(_ key: KeyEvent) {
+        switch key {
+        case .left:
+            withAnimation(.easeInOut(duration: 0.18)) { model.moveSelection(by: -1) }
+        case .right:
+            withAnimation(.easeInOut(duration: 0.18)) { model.moveSelection(by: 1) }
+        case .enter:
+            model.applyCurrentWallpaper()
+        case .escape:
+            model.hideWindow()
         }
     }
 }
@@ -88,40 +113,35 @@ struct ContentView: View {
 struct WallpaperItem: View {
     let url: URL
     let isSelected: Bool
-    
+    let ns: Namespace.ID
+    let accent: Color
+
     var body: some View {
-        AsyncImage(url: url) { phase in
-            if let image = phase.image {
-                image.resizable().aspectRatio(contentMode: .fill)
-            } else {
-                Color.white.opacity(0.1)
+        ZStack {
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .success(let image):
+                    image.resizable().scaledToFill()
+                default:
+                    Color.gray.opacity(0.25)
+                }
             }
+            .frame(width: 170, height: 110)
+            .clipped()
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSelected ? accent : Color.clear, lineWidth: 4)
+                    .matchedGeometryEffect(id: isSelected ? "sel" : "\(url)", in: ns)
+            )
+            .cornerRadius(12)
+            .shadow(color: accent.opacity(isSelected ? 0.4 : 0.15), radius: isSelected ? 12 : 4, y: isSelected ? 8 : 3)
         }
-        .frame(width: isSelected ? 240 : 180, height: isSelected ? 160 : 120) // Active item is larger
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.white, lineWidth: isSelected ? 4 : 0)
-        )
-        .shadow(radius: isSelected ? 10 : 2)
-        .animation(.spring(), value: isSelected) // Smooth resize animation
+        .animation(.easeInOut(duration: 0.18), value: isSelected)
     }
 }
 
-struct VisualEffectView: NSViewRepresentable {
-    let material: NSVisualEffectView.Material
-    let blendingMode: NSVisualEffectView.BlendingMode
-    
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-        view.material = material
-        view.blendingMode = blendingMode
-        view.state = .active
-        return view
-    }
-    
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-        nsView.material = material
-        nsView.blendingMode = blendingMode
+private extension Collection {
+    subscript(safe index: Index) -> Element? {
+        indices.contains(index) ? self[index] : nil
     }
 }

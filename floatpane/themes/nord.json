@@ -1,0 +1,14 @@
+{
+  "name": "Nord",
+  "colors": {
+    "primary": "#88C0D0",
+    "secondary": "#81A1C1",
+    "background": "#2E3440",
+    "surface": "#3B4252",
+    "onPrimary": "#2E3440",
+    "onSecondary": "#2E3440",
+    "onBackground": "#D8DEE9",
+    "onSurface": "#D8DEE9",
+    "error": "#BF616A"
+  }
+}

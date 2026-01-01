@@ -1,0 +1,14 @@
+{
+  "name": "Gruvbox Dark",
+  "colors": {
+    "primary": "#83A598",
+    "secondary": "#B16286",
+    "background": "#282828",
+    "surface": "#3C3836",
+    "onPrimary": "#EBDBB2",
+    "onSecondary": "#EBDBB2",
+    "onBackground": "#EBDBB2",
+    "onSurface": "#EBDBB2",
+    "error": "#CC241D"
+  }
+}

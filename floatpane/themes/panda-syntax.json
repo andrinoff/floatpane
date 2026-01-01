@@ -1,0 +1,14 @@
+{
+  "name": "Panda Syntax",
+  "colors": {
+    "primary": "#19F9D8",
+    "secondary": "#FFB86C",
+    "background": "#292A2B",
+    "surface": "#242526",
+    "onPrimary": "#000000",
+    "onSecondary": "#000000",
+    "onBackground": "#E6E6E6",
+    "onSurface": "#E6E6E6",
+    "error": "#FF4B82"
+  }
+}

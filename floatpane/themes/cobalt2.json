@@ -1,0 +1,14 @@
+{
+  "name": "Cobalt2",
+  "colors": {
+    "primary": "#FFC600",
+    "secondary": "#FF9D00",
+    "background": "#193549",
+    "surface": "#1F4662",
+    "onPrimary": "#000000",
+    "onSecondary": "#000000",
+    "onBackground": "#FFFFFF",
+    "onSurface": "#FFFFFF",
+    "error": "#FF0088"
+  }
+}

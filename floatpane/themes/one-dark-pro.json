@@ -1,0 +1,14 @@
+{
+  "name": "One Dark Pro",
+  "colors": {
+    "primary": "#61AFEF",
+    "secondary": "#C678DD",
+    "background": "#282C34",
+    "surface": "#21252B",
+    "onPrimary": "#FFFFFF",
+    "onSecondary": "#FFFFFF",
+    "onBackground": "#ABB2BF",
+    "onSurface": "#ABB2BF",
+    "error": "#E06C75"
+  }
+}

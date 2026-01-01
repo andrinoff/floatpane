@@ -1,0 +1,14 @@
+{
+  "name": "Material Theme",
+  "colors": {
+    "primary": "#80CBC4",
+    "secondary": "#FFAB40",
+    "background": "#263238",
+    "surface": "#37474F",
+    "onPrimary": "#FFFFFF",
+    "onSecondary": "#000000",
+    "onBackground": "#FFFFFF",
+    "onSurface": "#FFFFFF",
+    "error": "#FF5252"
+  }
+}

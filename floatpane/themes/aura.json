@@ -1,0 +1,14 @@
+{
+  "name": "Aura",
+  "colors": {
+    "primary": "#82aaff",
+    "secondary": "#c792ea",
+    "background": "#21202e",
+    "surface": "#15141e",
+    "onPrimary": "#ffffff",
+    "onSecondary": "#ffffff",
+    "onBackground": "#edecee",
+    "onSurface": "#edecee",
+    "error": "#ff6363"
+  }
+}
