@@ -23,7 +23,10 @@ struct WindowConfigurator: NSViewRepresentable {
         // Since we are in a WindowGroup, NSApp.windows should contain it.
         // We look for a window that is NOT the settings window (if any) and has standard behavior.
         // A simple heuristic is the first window that is visible or just the first one.
-        guard let screen = NSScreen.main, let window = NSApp.windows.first else { return }
+        guard let window = NSApp.windows.first else { return }
+        
+        let mouseLoc = NSEvent.mouseLocation
+        let screen = NSScreen.screens.first(where: { NSMouseInRect(mouseLoc, $0.frame, false) }) ?? NSScreen.main ?? NSScreen.screens[0]
 
         // Tag the window so we can find it later
         window.identifier = NSUserInterfaceItemIdentifier("FloatpaneMainWindow")

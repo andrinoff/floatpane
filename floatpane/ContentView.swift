@@ -1,6 +1,6 @@
-import SwiftUI
-import Carbon
 import AppKit
+import Carbon
+import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var model: WallpaperViewModel
@@ -14,7 +14,8 @@ struct ContentView: View {
                 ScrollViewReader { proxy in
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 14) {
-                            ForEach(Array(model.wallpapers.enumerated()), id: \.offset) { index, url in
+                            ForEach(Array(model.wallpapers.enumerated()), id: \.offset) {
+                                index, url in
                                 WallpaperItem(
                                     url: url,
                                     isSelected: index == model.selectedIndex,
@@ -54,9 +55,20 @@ struct ContentView: View {
                         .frame(height: 24)
                         .foregroundStyle(.white)
 
+                    if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"]
+                        as? String
+                    {
+                        Text("v\(version)")
+                            .font(.system(size: 12, weight: .medium, design: .monospaced))
+                            .foregroundStyle(theme.onSurfaceColor.opacity(0.6))
+                            .padding(.leading, -4)
+                            .padding(.bottom, 0)
+                    }
+
                     Spacer()
                     Button {
-                        let url = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("wallpapers")
+                        let url = FileManager.default.homeDirectoryForCurrentUser
+                            .appendingPathComponent("wallpapers")
                         NSWorkspace.shared.open(url)
                     } label: {
                         Image(systemName: "folder")
@@ -146,8 +158,8 @@ struct WallpaperItem: View {
     }
 }
 
-private extension Collection {
-    subscript(safe index: Index) -> Element? {
+extension Collection {
+    fileprivate subscript(safe index: Index) -> Element? {
         indices.contains(index) ? self[index] : nil
     }
 }
