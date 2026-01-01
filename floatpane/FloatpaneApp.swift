@@ -33,4 +33,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         shortcutManager = GlobalShortcutManager(model: model, store: store)
         shortcutManager?.registerAll()
     }
+
+    func applicationDidResignActive(_ notification: Notification) {
+        WallpaperViewModel.shared.hideWindow()
+    }
 }

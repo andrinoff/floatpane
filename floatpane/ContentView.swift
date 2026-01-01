@@ -1,5 +1,6 @@
 import SwiftUI
 import Carbon
+import AppKit
 
 struct ContentView: View {
     @EnvironmentObject var model: WallpaperViewModel
@@ -46,21 +47,25 @@ struct ContentView: View {
                 }
 
                 HStack(spacing: 12) {
-                    if let current = model.wallpapers[safe: model.selectedIndex] {
-                        Text("Current: \(current.lastPathComponent)")
-                            .font(.callout)
-                            .foregroundStyle(theme.onSurfaceColor.opacity(0.9))
-                            .lineLimit(1)
-                    } else {
-                        Text("No wallpaper selected")
-                            .font(.callout)
-                            .foregroundStyle(theme.onSurfaceColor.opacity(0.6))
-                    }
+                    Image("Logo")
+                        .resizable()
+                        .renderingMode(.template)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 24)
+                        .foregroundStyle(.white)
 
                     Spacer()
-                    Button("Reload") { model.reloadWallpapers() }
-                        .foregroundStyle(theme.primaryColor)
-                        .focusable(false)
+                    Button {
+                        let url = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("wallpapers")
+                        NSWorkspace.shared.open(url)
+                    } label: {
+                        Image(systemName: "folder")
+                            .imageScale(.medium)
+                            .accessibilityLabel("Open wallpapers folder")
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(theme.primaryColor)
+                    .focusable(false)
                     Button {
                         store.isSettingsPresented = true
                     } label: {
@@ -83,7 +88,6 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 26, style: .continuous)
                             .stroke(theme.primaryColor.opacity(0.25), lineWidth: 1)
                     )
-                    .shadow(color: theme.backgroundColor.opacity(0.5), radius: 28, y: 18)
             )
             .frame(maxWidth: 860)
             .padding(.horizontal, 32)
@@ -137,7 +141,6 @@ struct WallpaperItem: View {
                     .matchedGeometryEffect(id: isSelected ? "sel" : "\(url)", in: ns)
             )
             .cornerRadius(12)
-            .shadow(color: accent.opacity(isSelected ? 0.4 : 0.15), radius: isSelected ? 12 : 4, y: isSelected ? 8 : 3)
         }
         .animation(.easeInOut(duration: 0.18), value: isSelected)
     }
