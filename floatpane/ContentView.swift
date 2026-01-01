@@ -54,6 +54,11 @@ struct ContentView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 24)
                         .foregroundStyle(.white)
+                        .onTapGesture {
+                            if let url = URL(string: "https://floatpane.com") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
 
                     if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"]
                         as? String
