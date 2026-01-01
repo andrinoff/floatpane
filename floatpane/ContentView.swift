@@ -24,6 +24,7 @@ struct ContentView: View {
                                     withAnimation(.easeInOut(duration: 0.2)) {
                                         model.setWallpaper(at: index)
                                     }
+                                    model.applyCurrentWallpaper()
                                 }
                             }
                         }
@@ -59,6 +60,7 @@ struct ContentView: View {
                     Spacer()
                     Button("Reload") { model.reloadWallpapers() }
                         .foregroundStyle(theme.primaryColor)
+                        .focusable(false)
                     Button {
                         store.isSettingsPresented = true
                     } label: {
@@ -68,6 +70,7 @@ struct ContentView: View {
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(theme.onSurfaceColor)
+                    .focusable(false)
                 }
                 .padding(.horizontal, 18)
             }
@@ -86,10 +89,10 @@ struct ContentView: View {
             .padding(.horizontal, 32)
         }
         .background(WindowConfigurator())
-        .overlay(KeyCatcher { key in handleKey(key) })
+        .background(KeyCatcher { key in handleKey(key) })
         .onAppear {
             NSApp.activate(ignoringOtherApps: true)
-            NSApp.windows.first?.makeKeyAndOrderFront(nil)
+            // Initial configuration will be handled by WindowConfigurator
         }
         .sheet(isPresented: $store.isSettingsPresented) {
             SettingsView().environmentObject(store)

@@ -54,12 +54,29 @@ final class SettingsStore: ObservableObject {
     }
 
     private static func loadThemes() -> [Theme] {
-        guard let urls = Bundle.main.urls(forResourcesWithExtension: "json", subdirectory: "themes") else {
-            return [Theme.fallback]
-        }
-
         let decoder = JSONDecoder()
-        let loaded = urls.compactMap { url -> Theme? in
+        let bundle = Bundle.main
+        
+        // Collect URLs from both the "themes" subdirectory and the root resources
+        var urls = bundle.urls(forResourcesWithExtension: "json", subdirectory: "themes") ?? []
+        if let rootUrls = bundle.urls(forResourcesWithExtension: "json", subdirectory: nil) {
+            urls.append(contentsOf: rootUrls)
+        }
+        
+        // Fallback: Manually check the resource path if bundle.urls fails
+        if urls.isEmpty, let resourcePath = bundle.resourcePath {
+            let fm = FileManager.default
+            if let contents = try? fm.contentsOfDirectory(atPath: resourcePath) {
+                let jsonFiles = contents.filter { $0.hasSuffix(".json") }
+                let manualUrls = jsonFiles.map { URL(fileURLWithPath: resourcePath).appendingPathComponent($0) }
+                urls.append(contentsOf: manualUrls)
+            }
+        }
+        
+        // Deduplicate URLs
+        let uniqueUrls = Array(Set(urls))
+
+        let loaded = uniqueUrls.compactMap { url -> Theme? in
             guard let data = try? Data(contentsOf: url) else { return nil }
             return try? decoder.decode(Theme.self, from: data)
         }

@@ -19,25 +19,39 @@ struct WindowConfigurator: NSViewRepresentable {
     }
 
     private static func configureWindow() {
+        // Find the window that hosts our content.
+        // Since we are in a WindowGroup, NSApp.windows should contain it.
+        // We look for a window that is NOT the settings window (if any) and has standard behavior.
+        // A simple heuristic is the first window that is visible or just the first one.
         guard let screen = NSScreen.main, let window = NSApp.windows.first else { return }
 
+        // Tag the window so we can find it later
+        window.identifier = NSUserInterfaceItemIdentifier("FloatpaneMainWindow")
+
+        // Use visibleFrame to center within the available desktop area (respecting Dock/Menu Bar)
+        let screenRect = screen.visibleFrame
         let origin = NSPoint(
-            x: screen.frame.midX - preferredSize.width / 2,
-            y: screen.frame.midY - preferredSize.height / 2
+            x: screenRect.midX - preferredSize.width / 2,
+            y: screenRect.midY - preferredSize.height / 2
         )
         let frame = NSRect(origin: origin, size: preferredSize)
         window.setFrame(frame, display: true)
 
+        // Fix: Use .titled + .fullSizeContentView to allow the window to become key (accept keyboard input)
+        // while maintaining a borderless appearance by hiding the title bar.
+        window.styleMask = [.titled, .fullSizeContentView]
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
+        
         window.isOpaque = false
         window.backgroundColor = .clear
-        window.styleMask = [.borderless]
-        window.level = .statusBar
-        window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
+        window.level = .floating
+        window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         window.isMovable = false
         window.isMovableByWindowBackground = false
         window.hasShadow = false
-        window.center()
+        
+        // Do NOT call window.center() as it overrides our precise positioning and places the window slightly high.
+        window.makeKeyAndOrderFront(nil)
     }
 }

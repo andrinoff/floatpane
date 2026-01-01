@@ -12,7 +12,7 @@ struct FloatpaneApp: App {
                 .environmentObject(model)
                 .environmentObject(store)
         }
-        .windowStyle(.automatic)
+        .windowStyle(.hiddenTitleBar) // Use hiddenTitleBar to get close to what we want, then customize
         .commands {
             CommandGroup(after: .appSettings) {
                 Button("Settings…") {

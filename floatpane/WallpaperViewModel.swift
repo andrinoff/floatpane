@@ -47,18 +47,19 @@ final class WallpaperViewModel: ObservableObject {
 
     func showWindow() {
         isWindowVisible = true
-        WindowConfigurator.refreshWindowConfiguration()
-        NSApp.activate(ignoringOtherApps: true)
-        NSApp.windows.forEach {
-            $0.orderFrontRegardless()
-            $0.makeKeyAndOrderFront(nil)
+        if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "FloatpaneMainWindow" }) {
+            window.makeKeyAndOrderFront(nil)
+            WindowConfigurator.refreshWindowConfiguration()
         }
+        NSApp.activate(ignoringOtherApps: true)
         NotificationCenter.default.post(name: .keyCatcherFocusRequest, object: nil)
     }
 
     func hideWindow() {
         isWindowVisible = false
-        NSApp.windows.forEach { $0.orderOut(nil) }
+        if let window = NSApp.windows.first(where: { $0.identifier?.rawValue == "FloatpaneMainWindow" }) {
+            window.orderOut(nil)
+        }
     }
 
     private func setCurrentWallpaper() {
