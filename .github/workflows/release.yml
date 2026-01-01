@@ -32,7 +32,7 @@ jobs:
         with:
           branch: main
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
 
   update-homebrew-cask:
     name: Update Homebrew Cask
@@ -50,7 +50,7 @@ jobs:
         run: |
           gh release download v${{ env.RELEASE_VERSION }} --pattern "floatpane-*.dmg" --repo ${{ github.repository }}
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Calculate checksums
         run: |
