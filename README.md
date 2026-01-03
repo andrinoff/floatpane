@@ -17,7 +17,11 @@
 
 ## 🎬 Demo
 
-![floatpane Demo](assets/floatpane-preview.mp4)
+
+
+https://github.com/user-attachments/assets/fe0e9d6e-1577-44ae-b183-48d6e8261f59
+
+
 
 ## ✨ Features
 
