@@ -1,0 +1,12 @@
+<svg width="128" height="128" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="32" height="32" rx="6" fill="#FFFFFF"/>
+
+  <!-- Icon paths (black stroke) -->
+  <g stroke="#000000" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Paper airplane path -->
+    <path d="M5 16.5l9-4.5-2 11.5 3-4.5 5 2-8-14Z"/>
+    <!-- Wave path -->
+    <path d="M7 22c2-2.5 4-2.5 6 0s4 2.5 6 0" />
+  </g>
+</svg>
